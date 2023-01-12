@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 // 1. Declare entity type
 // 2. Declare DB types (mongo and pg)
@@ -36,6 +39,18 @@ func (pg postgresDB) retrieve(idx int) person {
 	return pg[idx]
 }
 
+type personService struct {
+	s storage
+}
+
+func (ps *personService) getPerson(idx int) (person, error) {
+	p := ps.s.retrieve(idx)
+	if p.name == "" {
+		return person{}, errors.New(fmt.Sprintf("No person found at %d", idx))
+	}
+	return p, nil
+}
+
 func put(s storage, idx int, p person) {
 	s.save(idx, p)
 }
@@ -51,15 +66,18 @@ func main() {
 	p1 := person{name: "mika"}
 	p2 := person{name: "hector"}
 
+	ps := personService{s: mdb}
+
 	put(mdb, 1, p1)
 	put(mdb, 2, p2)
 	fmt.Println(get(mdb, 1))
 	fmt.Println(get(mdb, 2))
+
+	fmt.Println(ps.getPerson(1))
+	fmt.Println(ps.getPerson(3))
 
 	put(pgdb, 1, p1)
 	put(pgdb, 2, p2)
 	fmt.Println(get(pgdb, 1))
 	fmt.Println(get(pgdb, 2))
 }
-
-
