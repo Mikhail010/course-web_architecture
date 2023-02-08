@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/Mikhail010/course-web_architecture/db_interface"
-	"github.com/Mikhail010/course-web_architecture/db_interface/storage/mongo"
-	"github.com/Mikhail010/course-web_architecture/db_interface/storage/postgres"
+	architecture "github.com/mikhail010/course-web_architecture"
+	"github.com/mikhail010/course-web_architecture/storage/mongo"
+	"github.com/mikhail010/course-web_architecture/storage/postgres"
 )
 
 func main() {
@@ -12,21 +12,21 @@ func main() {
 	mdb := mongo.Db{}
 	pgdb := postgres.Db{}
 
-	p1 := db_interface.Person{name: "mika"}
-	p2 := db_interface.Person{name: "hector"}
+	p1 := architecture.Person{Name: "mika"}
+	p2 := architecture.Person{Name: "hector"}
 
-	ps := db_interface.NewPersonService()
+	ps := architecture.NewPersonService(mdb)
 
-	db_interface.Put(mdb, 1, p1)
-	db_interface.Put(mdb, 2, p2)
-	fmt.Println(db_interface.Get(mdb, 1))
-	fmt.Println(get(mdb, 2))
+	architecture.Put(mdb, 1, p1)
+	architecture.Put(mdb, 2, p2)
+	fmt.Println(architecture.Get(mdb, 1))
+	fmt.Println(architecture.Get(mdb, 2))
 
 	fmt.Println(ps.GetPerson(1))
 	fmt.Println(ps.GetPerson(3))
 
-	db_interface.Put(pgdb, 1, p1)
-	db_interface.Put(pgdb, 2, p2)
-	fmt.Println(db_interface.Get(pgdb, 1))
-	fmt.Println(db_interface.Get(pgdb, 2))
+	architecture.Put(pgdb, 1, p1)
+	architecture.Put(pgdb, 2, p2)
+	fmt.Println(architecture.Get(pgdb, 1))
+	fmt.Println(architecture.Get(pgdb, 2))
 }

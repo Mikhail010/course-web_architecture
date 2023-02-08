@@ -12,12 +12,12 @@ import (
 // 5. Create high level funcs (put and get) that use storage interface methods
 
 type Person struct {
-	name string
+	Name string
 }
 
 type storage interface {
-	save(idx int, p Person)
-	retrieve(idx int) Person
+	Save(idx int, p Person)
+	Retrieve(idx int) Person
 }
 
 type personService struct {
@@ -30,17 +30,17 @@ func NewPersonService(s storage) *personService {
 }
 
 func (ps *personService) GetPerson(idx int) (Person, error) {
-	p := ps.s.retrieve(idx)
-	if p.name == "" {
+	p := ps.s.Retrieve(idx)
+	if p.Name == "" {
 		return Person{}, errors.New(fmt.Sprintf("No Person found at %d", idx))
 	}
 	return p, nil
 }
 
 func Put(s storage, idx int, p Person) {
-	s.save(idx, p)
+	s.Save(idx, p)
 }
 
 func Get(s storage, idx int) Person {
-	return s.retrieve(idx)
+	return s.Retrieve(idx)
 }
