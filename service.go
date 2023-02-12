@@ -5,31 +5,29 @@ import (
 	"fmt"
 )
 
-// 1. Declare entity type
-// 2. Declare DB types (mongo and pg)
-// 3. Declare storage interface w/methods save and retrieve
-// 4. Implement storage interface for mongoDB and postgresDB types
-// 5. Create high level funcs (put and get) that use storage interface methods
-
+// Person schema definition to store in a storage
 type Person struct {
 	Name string
 }
 
+// storage actions to read/write persons.
+// When retrieving a person, if they don't exist, returns the zero value
 type storage interface {
 	Save(idx int, p Person)
 	Retrieve(idx int) Person
 }
 
-type personService struct {
+// getPersonService gives access to GetPerson action with only what it needs to know (the storage)
+type getPersonService struct {
 	s storage
 }
 
-func NewPersonService(s storage) *personService {
-	return &personService{s: s}
+func NewPersonService(s storage) *getPersonService {
+	return &getPersonService{s: s}
 
 }
 
-func (ps *personService) GetPerson(idx int) (Person, error) {
+func (ps *getPersonService) GetPerson(idx int) (Person, error) {
 	p := ps.s.Retrieve(idx)
 	if p.Name == "" {
 		return Person{}, errors.New(fmt.Sprintf("No Person found at %d", idx))
